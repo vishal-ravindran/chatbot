@@ -16,9 +16,9 @@
     {% endif %}
     <div class="card-body messages-box">
 
+      {% for chat in chats %}
+      {% if chat.user == request.user %}
       <ul class="list-unstyled messages-list">
-        {% for chat in chats %}
-        {% if chat.user == request.user %}
         <li class="message sent">
           <div class="message-text">
             <div class="message-sender">

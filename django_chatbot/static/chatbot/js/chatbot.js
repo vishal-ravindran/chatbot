@@ -49,5 +49,6 @@ messageForm.addEventListener("submit", (e) => {
       </div>
       </div>`;
       messagesList.appendChild(messageItem);
+      location.reload();
     });
 });
