@@ -69,21 +69,49 @@
 <div class="chat-container">
   <div class="card flex-grow-1">
     <div class="card-header bg-primary text-white">Chat</div>
+    {% if user.is_authenticated %}
+    <div class="card-header bg-primary text-white"><b>Welcome {{user.username}} |
+        <a href="logout" style="color: azure">logout</a></b>
+    </div>
+    {% else %}
+    <div class="card-header bg-primary text-white">
+      <a href="login" style="color:gold;">login</a>
+      <a href="register" style="color: gold;">register</a>
+    </div>
+    {% endif %}
     <div class="card-body messages-box">
 
       <ul class="list-unstyled messages-list">
 
-        <li class="message received">
+        {% for chat in chats %}
+        {% if chat.user == request.user %}
+        <li class="message sent">
           <div class="message-text">
             <div class="message-sender">
-              <b>AI Chatbot</b>
+              <b>You</b>
             </div>
             <div class="message-content">
-              Hi, I am your AI Chatbot, you can ask me anything.
+              <p>{{chat.message}}<br>{{chat.created_at}}</p>
             </div>
           </div>
         </li>
       </ul>
+
+      <li class="message received">
+        <div class="message-text">
+          <div class="message-sender">
+            <b>AI Chatbot</b>
+          </div>
+          <div class="message-content">
+            <p>{{chat.response}}<br>{{chat.created_at}}</p>
+
+          </div>
+        </div>
+      </li>
+      </ul>
+      {% endif %}
+
+      {% endfor %}
 
     </div>
     <br><br>
@@ -132,20 +160,20 @@
 
     fetch('', {
       method: 'POST',
-      headers: {'content-type': 'application/x-www-form-urlencoded' },
+      headers: { 'content-type': 'application/x-www-form-urlencoded' },
       body: new URLSearchParams({
         'csrfmiddlewaretoken': document.querySelector('[name="csrfmiddlewaretoken"]').value,
         'message': message,
-    })
+      })
 
-  })
-  .then(response => response.json())
-  .then(data => {
-    const response = data.response;
-    const messageItem = document.createElement('li');
-    messageItem.classList.add('message','received');
-    messageItem.innerHTML =
-    `
+    })
+      .then(response => response.json())
+      .then(data => {
+        const response = data.response;
+        const messageItem = document.createElement('li');
+        messageItem.classList.add('message', 'received');
+        messageItem.innerHTML =
+          `
     <div class="message-text">
       <div class="message-sender">
         <b>AI Chatbot</b>
@@ -154,11 +182,11 @@
         ${response}
       </div>
       </div>`;
-      messagesList.appendChild(messageItem);
-  })
+        messagesList.appendChild(messageItem);
+      })
   })
 
-  
+
 </script>
 
 {% endblock %}
